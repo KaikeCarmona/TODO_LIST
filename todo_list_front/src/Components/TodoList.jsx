@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { fetchTasks, createTask, deleteTask } from '../Axios/api'; // Importar funções da API
-import TaskModal from './ViewModal'; // Importar o componente modal
-import styled from 'styled-components';
+import React, { useEffect, useState } from "react";
+import { fetchTasks, createTask, deleteTask } from "../Axios/api"; // Importar funções da API
+import TaskModal from "./ViewModal"; // Importar o componente modal
+import styled from "styled-components";
 
 const Container = styled.div`
+  background-color: #fff;
   padding: 20px;
   font-family: Arial, sans-serif;
-  max-width: 900px;
-  margin: auto;
+  max-width: 1000px;
+  margin: 7rem auto;
+  display: flex;
+  // align-items: center;
+  justify-content: center;
+  flex-direction: column;
 `;
 
 const Header = styled.h1`
@@ -23,11 +28,11 @@ const TaskList = styled.ul`
 `;
 
 const TaskItem = styled.li`
-  background: #f9f9f9;
+  background: #f0f4f8;
   margin: 10px 0;
   padding: 15px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -63,7 +68,7 @@ const Button = styled.button`
 
 const Input = styled.input`
   display: block;
-  width: 100%;
+  width: 90%;
   padding: 10px;
   margin: 5px 0;
   border-radius: 5px;
@@ -72,7 +77,7 @@ const Input = styled.input`
 
 const TextArea = styled.textarea`
   display: block;
-  width: 100%;
+  width: 90%;
   padding: 10px;
   margin: 5px 0;
   border-radius: 5px;
@@ -84,6 +89,13 @@ const FormContainer = styled.div`
   margin-bottom: 20px;
 `;
 
+const TaskCounter = styled.div`
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+`;
+
 const TodoList = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -92,9 +104,9 @@ const TodoList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAdding, setIsAdding] = useState(false); // Para controlar o formulário de nova tarefa
   const [newTask, setNewTask] = useState({
-    name: '',
-    description: '',
-    dueDate: '',
+    name: "",
+    description: "",
+    dueDate: "",
   });
 
   useEffect(() => {
@@ -104,7 +116,7 @@ const TodoList = () => {
         setTasks(data);
         setLoading(false);
       } catch (err) {
-        setError('Erro ao carregar tarefas.');
+        setError("Erro ao carregar tarefas.");
         setLoading(false);
       }
     };
@@ -128,7 +140,7 @@ const TodoList = () => {
 
   const handleChangeNewTask = (e) => {
     const { name, value } = e.target;
-    setNewTask(prev => ({ ...prev, [name]: value }));
+    setNewTask((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleCreateTask = async () => {
@@ -138,13 +150,13 @@ const TodoList = () => {
         desc_tarefa: newTask.description,
         data_finalizacao: newTask.dueDate,
       });
-      setNewTask({ name: '', description: '', dueDate: '' });
+      setNewTask({ name: "", description: "", dueDate: "" });
       setIsAdding(false);
       // Recarregar as tarefas após a criação
       const data = await fetchTasks();
       setTasks(data);
     } catch (error) {
-      console.error('Erro ao criar tarefa:', error.message);
+      console.error("Erro ao criar tarefa:", error.message);
     }
   };
 
@@ -155,7 +167,7 @@ const TodoList = () => {
       const data = await fetchTasks();
       setTasks(data);
     } catch (error) {
-      console.error('Erro ao deletar tarefa:', error.message);
+      console.error("Erro ao deletar tarefa:", error.message);
     }
   };
 
@@ -169,16 +181,26 @@ const TodoList = () => {
         <>
           <Button onClick={handleAddTaskClick}>Adicionar Tarefa</Button>
           <TaskList>
-            {tasks.map(task => (
+            {tasks.map((task) => (
               <TaskItem key={task.id}>
                 <h2>{task.nome_Tarefa}</h2>
-                <p>
-                  Data de Conclusão: {task.data_finalizacao ? new Date(task.data_finalizacao).toLocaleDateString() : 'Não definida'}
-                </p>
-                <Button onClick={() => handleTaskClick(task)}>Ver Detalhes</Button>
-                <Button onClick={() => handleDeleteTask(task.id)} style={{ backgroundColor: '#dc3545' }}>
-                  Deletar
-                </Button>
+                <div style={{ display: "flex", gap: 50 }}>
+                  <p>
+                    Data de Conclusão:{" "}
+                    {task.data_finalizacao
+                      ? new Date(task.data_finalizacao).toLocaleDateString()
+                      : "Não definida"}
+                  </p>
+                  <Button onClick={() => handleTaskClick(task)}>
+                    Ver Detalhes
+                  </Button>
+                  <Button
+                    onClick={() => handleDeleteTask(task.id)}
+                    style={{ backgroundColor: "#dc3545" }}
+                  >
+                    Deletar
+                  </Button>
+                </div>
               </TaskItem>
             ))}
           </TaskList>
@@ -209,11 +231,9 @@ const TodoList = () => {
         </FormContainer>
       )}
       {isModalOpen && (
-        <TaskModal 
-          task={selectedTask} 
-          onClose={handleCloseModal}
-        />
+        <TaskModal task={selectedTask} onClose={handleCloseModal} />
       )}
+      <TaskCounter>Você tem {tasks.length} atividades pendentes</TaskCounter>
     </Container>
   );
 };

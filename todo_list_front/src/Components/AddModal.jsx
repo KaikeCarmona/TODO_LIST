@@ -1,24 +1,16 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-
 const ModalBackground = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ModalContent = styled.div`
-  background: white;
-  padding: 20px;
+  position: absolute;  /* Alterado de fixed para absolute */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.95);  /* Fundo branco com transparência */
   border-radius: 8px;
+  padding: 20px;
   width: 400px;
   max-width: 90%;
+  z-index: 1000;
 `;
 
 const ModalHeader = styled.div`
@@ -81,37 +73,35 @@ const AddTodoModal = ({ onSubmit, onClose }) => {
 
   return (
     <ModalBackground>
-      <ModalContent>
-        <ModalHeader>
-          <h2>Adicionar Atividade</h2>
-          <CloseButton onClick={onClose}>&times;</CloseButton>
-        </ModalHeader>
-        <ModalBody>
-          <form onSubmit={handleSubmit}>
-            <Input
-              type="text"
-              placeholder="Nome da atividade"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-            <Input
-              type="text"
-              placeholder="Descrição"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            />
-            <Input
-              type="date"
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
-              required
-            />
-            <SubmitButton type="submit">Concluir</SubmitButton>
-          </form>
-        </ModalBody>
-      </ModalContent>
+      <ModalHeader>
+        <h2>Adicionar Atividade</h2>
+        <CloseButton onClick={onClose}>&times;</CloseButton>
+      </ModalHeader>
+      <ModalBody>
+        <form onSubmit={handleSubmit}>
+          <Input
+            type="text"
+            placeholder="Nome da atividade"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <Input
+            type="text"
+            placeholder="Descrição"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+          <Input
+            type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+            required
+          />
+          <SubmitButton type="submit">Concluir</SubmitButton>
+        </form>
+      </ModalBody>
     </ModalBackground>
   );
 };
